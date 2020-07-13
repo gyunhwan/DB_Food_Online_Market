@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.rog/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="basketDAO">
+	<select id="insertBasket" resultType="basketVO">
+		INSERT
+		INTO basket(member_email)
+		VALUES (#{member_email})
+	</select>
+	
+	<select id="insertBasketDetail" resultType="basketVO">
+		INSERT
+		INTO basket_detail(basket_code,supplier_food_code,basket_detail_amount)
+		VALUES (#{basket_code},#{supplier_food_code},1)
+	</select>
+	
+	<select id="getBasketCode" resultType="basketVO">
+		SELECT *
+		FROM basket
+		WHERE member_email=#{member_email}
+	</select>
+	
+	<select id="detailCheck" resultType="basketVO">
+		SELECT *
+		FROM basket_detail
+		WHERE basket_code=#{basket_code} AND supplier_food_code = #{supplier_food_code}
+	</select>
+	
+	<select id="increase" resultType="basketVO">
+		UPDATE basket_detail a , basket b
+		SET a.basket_detail_amount = a.basket_detail_amount + 1
+		WHERE b.member_email=#{member_email} AND a.supplier_food_code = #{supplier_food_code} AND b.basket_code=a.basket_code
+	</select>
+	
+	<select id="decrease" resultType="basketVO">
+		UPDATE basket_detail a , basket b
+		SET a.basket_detail_amount = a.basket_detail_amount - 1
+		WHERE b.member_email=#{member_email} AND a.supplier_food_code = #{supplier_food_code} AND b.basket_code=a.basket_code
+	</select>
+	
+	<select id="basketList" resultType="supplierFoodVO">
+		SELECT *
+		FROM basket_detail a, basket b , supplier_food c
+		WHERE b.member_email=#{member_email} AND a.basket_code=b.basket_code AND a.supplier_food_code=c.supplier_food_code
+	</select>
+	
+	<select id="deleteBasketDetail" resultType="basketVO">
+		DELETE
+		FROM basket_detail
+		WHERE basket_code=#{basket_code}
+	</select>
+	
+	<select id="deleteBasketDetail2" resultType="basketVO">
+		DELETE
+		FROM basket_detail
+		WHERE basket_detail_code=#{basket_detail_code}
+	</select>
+	
+</mapper>

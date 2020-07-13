@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.rog/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="orderDAO">
+	
+	<select id="singleOrderPage" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_code=#{supplier_food_code}
+	</select>
+	
+	<select id="insertOrder" resultType="orderVO">
+		INSERT
+		INTO orders(member_email,order_date,order_total,order_address,order_address_detail,order_state)
+		VALUES (#{member_email},#{order_date},#{order_total},#{order_address},#{order_address_detail},#{order_state})
+	</select>
+	
+	<select id="insertOrderDetail" resultType="orderVO">
+		INSERT
+		INTO order_detail(order_code,supplier_food_code,order_detail_price,order_detail_amount)
+		VALUES (#{order_code},#{supplier_food_code},#{order_detail_price},#{order_detail_amount})
+	</select>
+	
+	<select id="getOrderCode" resultType="orderVO">
+		SELECT * 
+		FROM orders
+		WHERE member_email=#{member_email} AND order_date=#{order_date}
+	</select>
+	
+	<select id="basketOrderPage" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food a , basket b , basket_detail c
+		WHERE b.member_email=#{member_email} AND b.basket_code = c.basket_code AND c.supplier_food_code=a.supplier_food_code 
+	</select>
+	
+	<select id="orderList" resultType="orderVO">
+		SELECT * 
+		FROM orders a , order_detail b , supplier_food c
+		WHERE a.order_code=b.order_code AND b.supplier_food_code = c.supplier_food_code AND (a.order_state="준비중" OR a.order_state="배송중") ORDER BY a.order_code DESC
+	</select>
+	
+	<select id="returnList" resultType="orderVO">
+		SELECT * 
+		FROM orders a , order_detail b , supplier_food c
+		WHERE a.order_code=b.order_code AND b.supplier_food_code = c.supplier_food_code AND (a.order_state="환불 신청" OR a.order_state="환불 신청 승인") ORDER BY a.order_code DESC
+	</select>
+	
+	<select id="deleteOrder" resultType="orderVO">
+		DELETE
+		FROM orders
+		WHERE order_code=#{order_code}
+	</select>
+	
+	<select id="deleteOrderDetail" resultType="orderVO">
+		DELETE
+		FROM order_detail
+		WHERE order_code=#{order_code}
+	</select>
+	
+	<select id="changeOrderState" resultType="orderVO">
+		UPDATE orders
+		SET order_state = #{order_state}
+		WHERE order_code=#{order_code} 
+	</select>
+	
+	<select id="getOrderDetail" resultType="orderVO">
+		SELECT * 
+		FROM order_detail a , supplier_food b , orders c
+		WHERE a.order_code=#{order_code} AND a.supplier_food_code=b.supplier_food_code AND a.order_code=c.order_code
+	</select>
+	
+</mapper>

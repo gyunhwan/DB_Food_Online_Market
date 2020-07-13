@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.rog/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="supplierDAO">
+	<select id="join" resultType="supplierVO">
+		INSERT
+		INTO supplier(supplier_business_number,supplier_pw,supplier_name,supplier_tel,supplier_grade_code)
+		VALUES (#{supplier_business_number},#{supplier_pw},#{supplier_name},#{supplier_tel},0)
+	</select>
+	
+	<select id="insertSupplierFood" resultType="supplierFoodVO">
+		INSERT
+		INTO supplier_food(supplier_business_number,supplier_food_name,supplier_food_image,supplier_food_comment,supplier_food_stock,supplier_food_yesno,supplier_food_price,supplier_food_unit)
+		VALUES (#{supplier_business_number},#{supplier_food_name},#{supplier_food_image},#{supplier_food_comment},#{supplier_food_stock},#{supplier_food_yesno},#{supplier_food_price},#{supplier_food_unit})
+	</select>
+	
+	<select id="supplierLogin" resultType="supplierVO">
+		SELECT *
+		FROM supplier
+		WHERE supplier_business_number=#{supplier_business_number} AND supplier_pw=#{supplier_pw}
+	</select>
+	
+	<select id="supplierFoodList" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_yesno = "승인"
+	</select>
+	
+	<select id="supplierFoodDetail" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_code = #{supplier_food_code}
+	</select>
+	
+	<select id="supplierInfo" resultType="orderVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_code = #{supplier_food_code}
+	</select>
+	
+	<select id="insertSupplierMonthTotal" resultType="orderVO">
+		INSERT
+		INTO supplier_month_total(supplier_business_number,sell_month,sell_total)
+		VALUES(#{supplier_business_number},#{sell_month},#{order_detail_price})
+	</select>
+	
+	<select id="updateSupplierMonthTotal" resultType="orderVO">
+		UPDATE supplier_month_total
+		SET sell_total = sell_total + (#{order_detail_price} * #{order_detail_amount})
+		WHERE supplier_business_number=#{supplier_business_number} AND sell_month=#{sell_month}
+	</select>
+	
+	<select id="checkMonthTotal" resultType="orderVO"> 
+		SELECT *
+		FROM supplier_month_total
+		WHERE supplier_business_number=#{supplier_business_number} AND sell_month=#{sell_month}
+	</select>
+	
+	<select id="reduceSupplierMonthTotal" resultType="orderVO">
+		UPDATE supplier_month_total
+		SET sell_total = sell_total - (#{order_detail_price} * #{order_detail_amount})
+		WHERE supplier_business_number=#{supplier_business_number} AND sell_month=#{sell_month}
+	</select>
+	
+	<select id="supplierFoodSearch" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_name like CONCAT('%',#{supplier_food_name},'%')
+	</select>
+	
+	<select id="foodYesNo" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_food_yesno = "승인대기중"
+	</select>
+	
+	<select id="supplierPersonalFoodList" resultType="supplierFoodVO">
+		SELECT * 
+		FROM supplier_food
+		WHERE supplier_business_number=#{supplier_business_number}
+	</select>
+	
+	<select id="supplierInfoUpdatePage" resultType="supplierVO">
+		SELECT * 
+		FROM supplier
+		WHERE supplier_business_number=#{supplier_business_number}
+	</select>
+	
+	<select id="supplierInfoUpdate" resultType="supplierVO">
+		UPDATE supplier
+		SET supplier_pw = #{supplier_pw} , supplier_name=#{supplier_name} , supplier_tel=#{supplier_tel}
+		WHERE supplier_business_number=#{supplier_business_number}
+	</select>
+	
+	<select id="updateFoodCode" resultType="supplierFoodVO">
+		UPDATE supplier_food
+		SET food_code=#{food_code}
+		WHERE supplier_food_code=#{supplier_food_code}
+	</select>
+	
+	<select id="getTotal" resultType="supplierMonthTotalVO">
+      SELECT * 
+      FROM supplier_month_total
+      WHERE supplier_business_number=#{supplier_business_number} AND sell_month = #{sell_month}
+   </select>
+   
+   <select id="updateGrade" resultType="supplierVO">
+      UPDATE supplier
+      SET supplier_grade_code = #{supplier_grade_code}
+      WHERE supplier_business_number=#{supplier_business_number}
+   </select>
+   
+   <select id="checkCal" resultType="calVO">
+      SELECT * 
+      FROM cal a , supplier b , supplier_grade c
+      WHERE a.supplier_business_number=#{supplier_business_number} AND a.supplier_business_number=b.supplier_business_number AND b.supplier_grade_code = c.supplier_grade_code 
+      ORDER BY cal_code DESC
+   </select>
+   
+   <select id="calSelect" resultType="orderVO">
+      SELECT * 
+      FROM order_detail a , supplier_food b , orders c
+      WHERE b.supplier_business_number=#{supplier_business_number} AND c.order_state="배송 완료"AND a.supplier_food_code=b.supplier_food_code AND a.order_code=c.order_code
+   </select>
+   
+   <select id="insertCal" resultType="calVO">
+      INSERT
+      INTO cal(supplier_business_number,cal_date,cal_price)
+      VALUES (#{supplier_business_number},#{cal_date},#{cal_price})
+   </select>
+</mapper>

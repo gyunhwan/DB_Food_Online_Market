@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+ 	<typeAliases>
+ 		<!-- <typeAlias alias="sample" type="com.jh.biz.sample.SampleVO"></typeAlias> -->
+ 		<typeAlias alias="basketVO" type="com.food.biz.basket.BasketVO"/>
+ 		<typeAlias alias="addressListVO" type="com.food.biz.member.AddressListVO"/>
+ 		<typeAlias alias="cardListVO" type="com.food.biz.member.CardListVO"/>
+ 		<typeAlias alias="memberGradeVO" type="com.food.biz.member.MemberGradeVO"/>
+ 		<typeAlias alias="memberMonthTotalVO" type="com.food.biz.member.MemberMonthTotalVO"/>
+ 		<typeAlias alias="memberVO" type="com.food.biz.member.MemberVO"/>
+ 		<typeAlias alias="orderVO" type="com.food.biz.order.OrderVO"/>
+ 		<typeAlias alias="evaluationMonthAvgVO" type="com.food.biz.recipe.EvaluationMonthAvgVO"/>
+ 		<typeAlias alias="evaluationVO" type="com.food.biz.recipe.EvaluationVO"/>
+ 		<typeAlias alias="recipeVO" type="com.food.biz.recipe.RecipeVO"/>
+ 		<typeAlias alias="calVO" type="com.food.biz.supplier.CalVO"/>
+ 		<typeAlias alias="supplierFoodVO" type="com.food.biz.supplier.SupplierFoodVO"/>
+ 		<typeAlias alias="supplierGradeVO" type="com.food.biz.supplier.SupplierGradeVO"/>
+ 		<typeAlias alias="supplierMonthTotalVO" type="com.food.biz.supplier.SupplierMonthTotalVO"/>
+ 		<typeAlias alias="supplierVO" type="com.food.biz.supplier.SupplierVO"/>
+ 		<typeAlias alias="foodVO" type="com.food.biz.food.FoodVO"></typeAlias>
+       <typeAlias alias="recipeFoodVO" type="com.food.biz.recipe.RecipeFoodVO"></typeAlias>
+       <typeAlias alias="recipeDetailDTO" type="com.food.biz.recipe.RecipeDetailDTO"></typeAlias>
+    </typeAliases>
+ 
+ 	<mappers>
+ 		<!-- <mapper resource="mappings/sample-mapper.xml"></mapper> -->
+		<mapper resource="mappings/member-mapping.xml"/>
+		<mapper resource="mappings/basket-mapping.xml"/>
+		<mapper resource="mappings/order-mapping.xml"/>
+		<mapper resource="mappings/recipe-mapping.xml"/>
+		<mapper resource="mappings/supplier-mapping.xml"/>
+		<mapper resource="mappings/food-mapping.xml"/>
+		
+ 	</mappers>
+</configuration>

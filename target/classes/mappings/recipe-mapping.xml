@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.rog/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="recipeDAO">
+	<select id="insertRecipe" resultType="recipeVO">
+		INSERT
+		INTO
+		recipe(recipe_name,recipe_comment,recipe_grade,recipe_image)
+		VALUES
+		(#{recipe_name},#{recipe_comment},#{recipe_grade},#{recipe_image})
+	</select>
+
+	<select id="insertFood" resultType="recipeVO">
+		INSERT
+		INTO
+		food(food_name,food_unit)
+		VALUES (#{food_name},#{food_unit})
+	</select>
+
+	<select id="insertRecipeFood" resultType="recipeVO">
+		INSERT
+		INTO
+		recipe_food(food_code,recipe_code,recipe_food_amount)
+		VALUES
+		(#{food_code},#{recipe_code},#{food_amount})
+	</select>
+
+	<select id="getFoodCode" resultType="recipeVO">
+		SELECT *
+		FROM food
+		WHERE
+		food_name = #{food_name} AND food_unit=#{food_unit}
+	</select>
+
+	<select id="getRecipeCode" resultType="recipeVO">
+		SELECT *
+		FROM recipe
+		ORDER
+		BY recipe_code DESC LIMIT 1;
+	</select>
+
+	<select id="recipeList" resultType="recipeVO">
+		SELECT *
+		FROM recipe ORDER BY recipe_code DESC
+	</select>
+	<select id="getRecipeOne" resultType="recipeVO">
+		SELECT * FROM recipe WHERE
+		recipe_code=#{code}
+	</select>
+	<select id="recipeDetail" resultType="recipeDetailDTO">
+		SELECT *
+		FROM
+		recipe,recipe_food,food
+		WHERE
+		recipe.recipe_code=recipe_food.recipe_code AND
+		recipe_food.food_code=food.food_code AND
+		recipe.recipe_code=#{recipe_code}
+	</select>
+	<select id="recipeSearch" resultType="recipeVO">
+		SELECT *
+		FROM recipe
+		WHERE
+		recipe_name like CONCAT('%',#{recipe_name},'%')
+		 
+	</select>
+	<select id="getComment" resultType="evaluationVO">
+		SELECT *
+		FROM evaluation
+		WHERE
+		recipe_code=#{code}
+	</select>
+	<insert id="insertEvaluation" parameterType="evaluationVO">
+		INSERT INTO
+		`food`.`evaluation`
+		(
+		member_email,
+		recipe_code,
+		evaluation_comment,
+		evaluation_point)
+		VALUES
+		(
+		#{member_email },
+		#{recipe_code },
+		#{evaluation_comment},
+		#{evaluation_point});
+	</insert>
+	<select id="getAuto" resultType="supplierFoodVO">
+		SELECT supplier_food.supplier_food_code,
+		supplier_food.supplier_business_number,
+		supplier_food.food_code,
+		supplier_food.supplier_food_name,
+		supplier_food.supplier_food_image,
+		supplier_food.supplier_food_comment,
+		supplier_food.supplier_food_stock,
+		supplier_food.supplier_food_yesno,
+		supplier_food.supplier_food_price,
+		supplier_food.supplier_food_unit
+		FROM recipe_food,food,supplier_food
+		WHERE recipe_food.recipe_code=#{code} AND recipe_food.food_code=food.food_code
+		AND food.food_code=supplier_food.food_code AND
+		supplier_food.supplier_food_yesno="승인"
+		GROUP BY food.food_code HAVING
+		supplier_food.supplier_food_price=min(supplier_food.supplier_food_price)
+		ORDER BY supplier_food.supplier_food_price
+	</select>
+	
+    <insert id="insertEvaluationMonthAvg" parameterType="evaluationMonthAvgVO">
+        INSERT
+        INTO evaluation_month_avg(recipe_code,evaluation_month,evaluation_avg_point,evaluation_count)
+        VALUES (#{recipe_code},#{evaluation_month},#{evaluation_avg_point},1)
+   </insert>
+   
+   <select id="updateEvaluationMonthAvg" resultType="evaluationMonthAvgVO">
+      UPDATE evaluation_month_avg
+      SET evaluation_avg_point = (((evaluation_avg_point*evaluation_count)+#{evaluation_avg_point})/(evaluation_count+1)) , evaluation_count = evaluation_count +1
+      WHERE recipe_code = #{recipe_code} AND evaluation_month=#{evaluation_month}
+   </select>
+   
+   <select id="checkEvaluationMonthAvg" resultType="evaluationMonthAvgVO">
+      SELECT *
+      FROM evaluation_month_avg
+      WHERE recipe_code = #{recipe_code} AND evaluation_month = #{evaluation_month}
+   </select>
+	<select id="popularRecipe" resultType="recipeVO">
+      SELECT * 
+      FROM popular_recipe
+   </select>
+   
+   <select id="updateRecipeGrade"
+      resultType="recipeVO">
+      UPDATE recipe
+      SET recipe_grade=#{recipe_grade}
+      WHERE recipe_code=#{recipe_code}
+   </select>
+</mapper>

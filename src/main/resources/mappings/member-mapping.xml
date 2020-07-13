@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.rog/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="memberDAO">
+
+   <select id="join" resultType="memberVO">
+      INSERT
+      INTO members(member_email,member_pw,member_name,member_tel,admin,member_grade_code)
+      VALUES (#{member_email},#{member_pw},#{member_name},#{member_tel},0,0)
+   </select>
+   
+   <select id="insertAddress" resultType="addressListVO">
+      INSERT
+      INTO address_list(member_email,address,address_detail,post_number)
+      VALUES (#{member_email},#{address},#{address_detail},#{post_number})
+   </select>
+   
+   <select id="insertCard" resultType="cardListVO">
+      INSERT
+      INTO card_list(member_email,card_number,card_date,card_kind)
+      VALUES (#{member_email},#{card_number},#{card_date},#{card_kind})
+   </select>
+   
+   <select id="deleteCard" resultType="cardListVO">
+      DELETE
+      FROM card_list
+      WHERE member_email=#{member_email} AND card_code=#{card_code}
+   </select>
+   
+   <select id="deleteAddress" resultType="addressListVO">
+      DELETE
+      FROM address_list
+      WHERE member_email=#{member_email} AND address_code=#{address_code}
+   </select>
+   
+   <select id="memberLogin" resultType="memberVO">
+      SELECT *
+      FROM members
+      
+      WHERE member_email=#{member_email} AND member_pw=#{member_pw}
+   </select>
+   
+   <select id="cardList" resultType="cardListVO">
+      SELECT *
+      FROM card_list
+      WHERE member_email=#{member_email}
+   </select>
+   
+   <select id="addressList" resultType="addressListVO">
+      SELECT *
+      FROM address_list
+      WHERE member_email=#{member_email}
+   </select>
+
+   <select id="getCard" resultType="cardListVO">
+      SELECT *
+      FROM card_list
+      WHERE card_code=#{card_code}
+   </select>
+   
+   <select id="getAddress" resultType="addressListVO">
+      SELECT *
+      FROM address_list
+      WHERE address_code=#{address_code}
+   </select>
+   
+   <select id="getOrderList" resultType="orderVO">
+      SELECT * 
+      FROM orders a , order_detail b , supplier_food c
+      WHERE a.order_code=b.order_code AND b.supplier_food_code = c.supplier_food_code AND a.member_email=#{member_email} ORDER BY a.order_code DESC
+   </select>
+   
+   <select id="insertMemberMonthTotal" resultType="orderVO">
+      INSERT
+      INTO member_month_total(member_email,buy_month,buy_total)
+      VALUES(#{member_email},#{buy_month},#{order_detail_price})
+   </select>
+   
+   <select id="updateMemberMonthTotal" resultType="orderVO">
+      UPDATE member_month_total
+      SET buy_total = buy_total + (#{order_detail_price} * #{order_detail_amount})
+      WHERE member_email=#{member_email} AND buy_month=#{buy_month}
+   </select>
+   
+   <select id="checkMonthTotal" resultType="orderVO">
+      SELECT *
+      FROM member_month_total
+      WHERE member_email=#{member_email} AND buy_month=#{buy_month}
+   </select>
+   
+   <select id="reduceMemberMonthTotal" resultType="orderVO">
+      UPDATE member_month_total
+      SET buy_total = buy_total - (#{order_detail_price} * #{order_detail_amount})
+      WHERE member_email=#{member_email} AND buy_month=#{buy_month}
+   </select>
+   
+   <select id="foodYesNoDetail" resultType="supplierFoodVO">
+      SELECT *
+      FROM supplier_food
+      WHERE supplier_food_code=#{supplier_food_code}
+   </select>
+   
+   <select id="foodYes" resultType="supplierFoodVO">
+      UPDATE supplier_food
+      SET supplier_food_yesno = "승인"
+      WHERE supplier_food_code = #{supplier_food_code}
+   </select>
+   
+   <select id="foodNo" resultType="supplierFoodVO">
+      UPDATE supplier_food
+      SET supplier_food_yesno = "거절"
+      WHERE supplier_food_code = #{supplier_food_code}
+   </select>
+   
+   <select id="memberInfoUpdatePage" resultType="memberVO">
+      SELECT * 
+      FROM members
+      WHERE member_email=#{member_email}
+   </select>
+   
+   <select id="memberInfoUpdate" resultType="memberVO">
+      UPDATE members
+      SET member_pw = #{member_pw} , member_name=#{member_name} , member_tel=#{member_tel}
+      WHERE member_email=#{member_email}
+   </select>
+   
+   <select id="getTotal" resultType="memberMonthTotalVO">
+      SELECT * 
+      FROM member_month_total
+      WHERE member_email=#{member_email} AND buy_month = #{buy_month}
+   </select>
+   
+   <select id="updateGrade" resultType="memberVO">
+      UPDATE members
+      SET member_grade_code = #{member_grade_code}
+      WHERE member_email=#{member_email}
+   </select>
+</mapper>
